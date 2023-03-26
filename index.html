@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>OpenAI API</title>
+</head>
+<body>
+<h1>OpenAI API Starter</h1>
+<form>
+	<label for="prompt">Text prompt:</label>
+	<input type="text" id="prompt" name="prompt"><br><br>
+	<button type="submit">Submit</button>
+</form>
+<div id="output"></div>
+<script type="module">
+	import openai from 'https://cdn.jsdelivr.net/npm/openai@3.2.0/+esm'
+	import { OPENAI_KEY } from './secrets.js';
+	
+	const form = document.querySelector('form');
+	const output = document.querySelector('#output');
+	
+	form.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const prompt = document.querySelector('#prompt').value;
+		
+		const configuration = new openai.Configuration({
+			apiKey: OPENAI_KEY,
+		});
+		const openAIApi = new openai.OpenAIApi(configuration);
+		
+		const completion = await openAIApi.createChatCompletion({
+			model: "gpt-3.5-turbo",
+			messages: [{role: "user", content: prompt}],
+		});
+		console.log(completion)
+		const text = completion.data.choices[0].message.content;
+		output.textContent = text;
+	});
+</script>
+</body>
+</html>
